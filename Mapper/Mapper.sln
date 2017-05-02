@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapperReflect", "MapperReflect\MapperReflect.csproj", "{3883483D-AC71-4DF8-91BC-44FF3A32656A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitMapperReflectTest", "UnitMapperReflectTest\UnitMapperReflectTest.csproj", "{E30CC749-4D22-4359-8B24-F9B8E8883C64}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapperEmit", "MapperEmit\MapperEmit.csproj", "{DD92B308-9E39-4F6C-B93C-21E226503419}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3883483D-AC71-4DF8-91BC-44FF3A32656A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3883483D-AC71-4DF8-91BC-44FF3A32656A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3883483D-AC71-4DF8-91BC-44FF3A32656A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3883483D-AC71-4DF8-91BC-44FF3A32656A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E30CC749-4D22-4359-8B24-F9B8E8883C64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E30CC749-4D22-4359-8B24-F9B8E8883C64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E30CC749-4D22-4359-8B24-F9B8E8883C64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E30CC749-4D22-4359-8B24-F9B8E8883C64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD92B308-9E39-4F6C-B93C-21E226503419}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD92B308-9E39-4F6C-B93C-21E226503419}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD92B308-9E39-4F6C-B93C-21E226503419}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD92B308-9E39-4F6C-B93C-21E226503419}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
