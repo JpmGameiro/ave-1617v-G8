@@ -48,7 +48,7 @@ namespace MapperReflect
             {
                 if (m.klass == typeof(FieldInfo))
                 {
-                    handler = new FieldHandler(klassSrc,klassDest);
+                    handler = new FieldHandler(klassSrc,klassDest);         
                 }
                 else handler = new AttributeHandler(klassSrc, klassDest, m.klass);
             }         

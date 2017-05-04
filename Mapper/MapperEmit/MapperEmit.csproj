@@ -43,11 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="AttributeHandler.cs" />
+    <Compile Include="FieldHandler.cs" />
+    <Compile Include="ParameterHandler.cs" />
+    <Compile Include="PrimitiveHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MapperReflect\MapperReflect.csproj">
+      <Project>{3883483d-ac71-4df8-91bc-44ff3a32656a}</Project>
+      <Name>MapperReflect</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
