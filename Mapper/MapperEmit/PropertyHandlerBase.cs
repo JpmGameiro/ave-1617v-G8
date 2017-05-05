@@ -5,52 +5,26 @@ using MapperReflect;
 
 namespace MapperEmit
 {
-    public class PropertyHandler : Handler
+    abstract class PropertyHandlerBase : Handler
     {
         private Type src;
         private Type dest;
         private ConstructorInfo ctor;
-        public List <KeyValuePair<PropertyInfo, PropertyInfo>> propertyList;
-        public Dictionary<KeyValuePair<PropertyInfo, PropertyInfo>, IMapper> map;
+        public List<KeyValuePair<PropertyInfo, PropertyInfo>> propertyList;
+        public Dictionary<KeyValuePair<PropertyInfo, PropertyInfo>, IMapperEmit> map;
 
-        public PropertyHandler(Type src, Type dest)
+        public PropertyHandlerBase(Type src, Type dest)
         {
             this.src = src;
             this.dest = dest;
             propertyList = new List<KeyValuePair<PropertyInfo, PropertyInfo>>();
-            map = new Dictionary<KeyValuePair<PropertyInfo, PropertyInfo>, IMapper>();
+            map = new Dictionary<KeyValuePair<PropertyInfo, PropertyInfo>, IMapperEmit>();
             foreach (PropertyInfo piDest in dest.GetProperties())
             {
                 PropertyInfo piSrc = src.GetProperty(piDest.Name);
-                if (piSrc != null && piDest.PropertyType.IsAssignableFrom( piSrc.PropertyType))
+                if (piSrc != null && piDest.PropertyType.IsAssignableFrom(piSrc.PropertyType))
                     propertyList.Add(new KeyValuePair<PropertyInfo, PropertyInfo>(piSrc, piDest));
             }
-        }
-
-        public override object Copy(object objSrc)
-        {
-            object objDest = Activator.CreateInstance(dest);
-            if (propertyList != null)
-            {
-                foreach (KeyValuePair<PropertyInfo, PropertyInfo> pair in propertyList)
-                {
-                    PropertyInfo propertyValue = pair.Value;
-                    PropertyInfo propertyKey = pair.Key;
-                    if (propertyKey.PropertyType.IsAssignableFrom(propertyValue.PropertyType))
-                    {
-                        propertyValue.SetValue(objDest, propertyKey.GetValue(objSrc));
-                    }
-                    else
-                    {
-                        IMapper m;
-                        if (map.TryGetValue(pair, out m))
-                        {
-                            propertyValue.SetValue(objDest, m.Map(propertyKey.GetValue(objSrc)));
-                        }
-                    }     
-                }
-            }
-            return objDest;
         }
 
         public override Type GetKlass()
@@ -62,7 +36,7 @@ namespace MapperEmit
         {
             PropertyInfo pInfoSrc = src.GetProperty(nameSrc);
             PropertyInfo pInfoDest = dest.GetProperty(nameDest);
-            if (pInfoSrc != null && pInfoDest != null )
+            if (pInfoSrc != null && pInfoDest != null)
             {
                 if (pInfoSrc.PropertyType.IsAssignableFrom(pInfoDest.PropertyType))
                 {
@@ -71,10 +45,10 @@ namespace MapperEmit
                 else if (!pInfoSrc.PropertyType.IsPrimitive && !pInfoDest.PropertyType.IsPrimitive &&
                          pInfoSrc.PropertyType != typeof(string) && pInfoDest.PropertyType != typeof(string))
                 {
-                    IMapper m = new Mapper(pInfoSrc.PropertyType, pInfoDest.PropertyType);
+                    IMapperEmit m = new MapperEmit(pInfoSrc.PropertyType, pInfoDest.PropertyType);
                     KeyValuePair<PropertyInfo, PropertyInfo> pair =
                         new KeyValuePair<PropertyInfo, PropertyInfo>(pInfoSrc, pInfoDest);
-                    map.Add(pair , m);
+                    map.Add(pair, m);
                     propertyList.Add(pair);
                 }
             }

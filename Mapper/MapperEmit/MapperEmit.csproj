@@ -43,12 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AttributeHandler.cs" />
-    <Compile Include="FieldHandler.cs" />
-    <Compile Include="ParameterHandler.cs" />
-    <Compile Include="PrimitiveHandler.cs" />
+    <Compile Include="AttributeHandlerBase.cs" />
+    <Compile Include="FieldHandlerBase.cs" />
+    <Compile Include="IMapperEmit.cs" />
+    <Compile Include="MapperEmit.cs" />
+    <Compile Include="ParameterHandlerBase.cs" />
+    <Compile Include="PrimitiveHandlerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyHandler.cs" />
+    <Compile Include="PropertyHandlerBase.cs" />
+    <Compile Include="RuntimeHandlerGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

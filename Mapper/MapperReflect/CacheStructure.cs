@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MapperReflect
 {
-    class CacheStructure
+    public class CacheStructure
     {
         private Dictionary<Type, object> cacheDictionary;
 

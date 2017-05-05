@@ -3,12 +3,12 @@ using MapperReflect;
 
 namespace MapperEmit
 {
-    public class PrimitiveHandler : Handler
+    abstract class PrimitiveHandlerBase : Handler
     {
         private Type klassDest;
         private Type klassSrc;
 
-        public PrimitiveHandler(Type klassSrc, Type klassDest)
+        public PrimitiveHandlerBase(Type klassSrc, Type klassDest)
         {
             this.klassSrc = klassSrc;
             this.klassDest = klassDest;
@@ -22,12 +22,6 @@ namespace MapperEmit
         public override Type GetKlass()
         {
             return typeof(PrimitiveHandler);
-        }
-
-        public override object Copy(object objSrc)
-        {
-            object o = objSrc;
-            return o;
         }
     }
 }
