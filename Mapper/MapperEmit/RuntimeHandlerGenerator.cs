@@ -8,8 +8,7 @@ namespace MapperEmit
 {
     public class RuntimeHandlerGenerator
     {
-
-
+    
         public static Handler generateRuntimePrimitiveHandler()
         {
             TypeBuilder tBuilder = GetTypeBuilder("Primitive", typeof(PrimitiveHandlerBase));
@@ -44,16 +43,37 @@ namespace MapperEmit
 
             ILGenerator ilGenerator = mBuilder.GetILGenerator();
             /*********************************** IL CODE ***************************/
-            ilGenerator.Emit(OpCodes.Ldarg_0);
-            ilGenerator.Emit(OpCodes.Ldfld, typeof(ParameterHandlerBase).GetField("parameterInfos"));
+            //ilGenerator.Emit(OpCodes.Ldarg_0);
+            ilGenerator.Emit(OpCodes.Ldc_I4, parameterInfos.Length);
             ilGenerator.Emit(OpCodes.Newarr, typeof(object));
             ilGenerator.Emit(OpCodes.Stloc_0);
             ilGenerator.Emit(OpCodes.Stloc_1, 0);
             foreach (KeyValuePair<MemberInfo, ParameterInfo> pair in parameterList)
             {
-                ilGenerator.Emit(OpCodes.Ldloc, (Type) pair.Key);
+                ilGenerator.Emit(OpCodes.Ldloc_0);
+                ilGenerator.Emit(OpCodes.Ldloc_1);
 
-            }   
+                if (pair.Key is FieldInfo)
+                {
+                    ilGenerator.Emit(OpCodes.Ldarg_0);
+                    ilGenerator.Emit(OpCodes.Ldfld, (FieldInfo) pair.Key);
+                    ilGenerator.Emit(OpCodes.Stfld);
+                }
+                else if (pair.Key is PropertyInfo)
+                {
+                    ilGenerator.Emit(OpCodes.Ldarg_0);
+                    ilGenerator.Emit(OpCodes.Call, klassSrc.GetProperty(pair.Key.Name).GetGetMethod());
+
+                }
+                ilGenerator.Emit(OpCodes.Ldloc_1);
+                ilGenerator.Emit(OpCodes.Ldc_I4, 1);
+                ilGenerator.Emit(OpCodes.Add);
+                ilGenerator.Emit(OpCodes.Stloc_1);
+            }
+            ilGenerator.Emit(OpCodes.Ldloc_0);
+            ilGenerator.Emit(OpCodes.Newobj, constructorInfo);
+            ilGenerator.Emit(OpCodes.Ret);
+
 
             /*********************************** END ***************************/
 
@@ -73,12 +93,13 @@ namespace MapperEmit
             //        }
 
 
-
-
-
-
             Type t = tBuilder.CreateType();
             return (Handler)Activator.CreateInstance(t);
+        }
+
+        private static void method(MemberInfo pairKey)
+        {
+            
         }
 
         public static Handler generateRuntimePropertyHandler(Type klassSrc, Type klassDest)
@@ -93,6 +114,32 @@ namespace MapperEmit
 
 
             /*********************************** END ***************************/
+
+//            object objDest = Activator.CreateInstance(dest);
+//            if (propertyList != null)
+//            {
+//                foreach (KeyValuePair<PropertyInfo, PropertyInfo> pair in propertyList)
+//                {
+//                    PropertyInfo propertyValue = pair.Value;
+//                    PropertyInfo propertyKey = pair.Key;
+//                    if (propertyKey.PropertyType.IsAssignableFrom(propertyValue.PropertyType))
+//                    {
+//                        propertyValue.SetValue(objDest, propertyKey.GetValue(objSrc));
+//                    }
+//                    else
+//                    {
+//                        IMapper m;
+//                        if (map.TryGetValue(pair, out m))
+//                        {
+//                            propertyValue.SetValue(objDest, m.Map(propertyKey.GetValue(objSrc)));
+//                        }
+//                    }
+//                }
+//            }
+//            return objDest;
+
+
+
             Type t = tBuilder.CreateType();
             return (Handler)Activator.CreateInstance(t);
         }
@@ -109,6 +156,30 @@ namespace MapperEmit
 
 
             /*********************************** END ***************************/
+
+//            object objDest = Activator.CreateInstance(dest);
+//            if (fieldList != null)
+//            {
+//                foreach (KeyValuePair<FieldInfo, FieldInfo> pair in fieldList)
+//                {
+//                    FieldInfo fieldValue = pair.Value;
+//                    FieldInfo fieldKey = pair.Key;
+//                    if (fieldKey.FieldType.IsAssignableFrom(fieldValue.FieldType))
+//                    {
+//                        fieldValue.SetValue(objDest, fieldKey.GetValue(objSrc));
+//                    }
+//                    else
+//                    {
+//                        IMapper m;
+//                        if (map.TryGetValue(pair, out m))
+//                        {
+//                            fieldValue.SetValue(objDest, m.Map(fieldKey.GetValue(objSrc)));
+//                        }
+//                    }
+//                }
+//            }
+//            return objDest;
+
             Type t = tBuilder.CreateType();
             return (Handler)Activator.CreateInstance(t);
         }
@@ -125,6 +196,22 @@ namespace MapperEmit
 
 
             /*********************************** END ***************************/
+
+//            object objDest = Activator.CreateInstance(dest);
+//            if (attributeList != null)
+//            {
+//                foreach (KeyValuePair<MemberInfo, MemberInfo> pair in attributeList)
+//                {
+//                    if (pair.Key is PropertyInfo)
+//                    {
+//                        ((PropertyInfo)pair.Value).SetValue(objDest, ((PropertyInfo)pair.Key).GetValue(objSrc));
+//                    }
+//                    else if (pair.Key is FieldInfo)
+//                        ((FieldInfo)pair.Value).SetValue(objDest, ((FieldInfo)pair.Key).GetValue(objSrc));
+//                }
+//            }
+//            return objDest;
+
             Type t = tBuilder.CreateType();
             return (Handler)Activator.CreateInstance(t);
         }
