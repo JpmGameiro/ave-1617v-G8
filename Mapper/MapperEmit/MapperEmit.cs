@@ -24,7 +24,7 @@ namespace MapperEmit
             cache = new CacheStructure();
             if (klassSrc.IsPrimitive && klassDest.IsPrimitive)
             {
-                handler = RuntimeHandlerGenerator.generateRuntimePrimitiveHandler(klassSrc, klassDest);
+                handler = RuntimeHandlerGenerator.generateRuntimePrimitiveHandler();
             }
             else
             {

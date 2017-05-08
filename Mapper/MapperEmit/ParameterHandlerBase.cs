@@ -10,7 +10,7 @@ namespace MapperEmit
         private Type src;
         private Type dest;
         private ConstructorInfo ctor;
-        private ParameterInfo[] parameterInfos;
+        public ParameterInfo[] parameterInfos;
         public List<KeyValuePair<MemberInfo, ParameterInfo>> parameterList;
 
         public ParameterHandlerBase(Type src, Type dest, ConstructorInfo ctor)
