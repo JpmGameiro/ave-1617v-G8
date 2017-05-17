@@ -43,7 +43,7 @@ namespace MapperEmit
 
             ILGenerator ilGenerator = mBuilder.GetILGenerator();
             /*********************************** IL CODE ***************************/
-            //ilGenerator.Emit(OpCodes.Ldarg_0);
+
             ilGenerator.Emit(OpCodes.Ldc_I4, parameterInfos.Length);
             ilGenerator.Emit(OpCodes.Newarr, typeof(object));
             ilGenerator.Emit(OpCodes.Stloc_0);
@@ -97,21 +97,51 @@ namespace MapperEmit
             return (Handler)Activator.CreateInstance(t);
         }
 
-        private static void method(MemberInfo pairKey)
-        {
-            
-        }
-
         public static Handler generateRuntimePropertyHandler(Type klassSrc, Type klassDest)
         {
+            
+            List<KeyValuePair<PropertyInfo, PropertyInfo>> propertyList;
+            Dictionary<KeyValuePair<PropertyInfo, PropertyInfo>, IMapperEmit> map;
+            propertyList = new List<KeyValuePair<PropertyInfo, PropertyInfo>>();
+            map = new Dictionary<KeyValuePair<PropertyInfo, PropertyInfo>, IMapperEmit>();
+            foreach (PropertyInfo piDest in klassDest.GetProperties())
+            {
+                PropertyInfo piSrc = klassSrc.GetProperty(piDest.Name);
+                if (piSrc != null && piDest.PropertyType.IsAssignableFrom(piSrc.PropertyType))
+                    propertyList.Add(new KeyValuePair<PropertyInfo, PropertyInfo>(piSrc, piDest));
+            }
+
             TypeBuilder tBuilder = GetTypeBuilder("Property", typeof(PropertyHandlerBase));
             MethodBuilder mBuilder = GetMethodBuilder(tBuilder);
 
             ILGenerator ilGenerator = mBuilder.GetILGenerator();
+
             /*********************************** IL CODE ***************************/
+            ilGenerator.Emit(OpCodes.Ldtoken, klassDest);
+            ilGenerator.Emit(OpCodes.Call, typeof(Type).GetMethod("GetTypeFromHandle"));
+            ilGenerator.Emit(OpCodes.Call, typeof(Activator).GetMethod("CreateInstance"));
+            ilGenerator.Emit(OpCodes.Stloc_0);
 
+            if (propertyList != null)
+            {
+                foreach (KeyValuePair<PropertyInfo, PropertyInfo> pair in propertyList)
+                {
+                    if (pair.Key.PropertyType.IsAssignableFrom(pair.Value.PropertyType))
+                    {
+                        ilGenerator.Emit(OpCodes.Ldarg_1);
+                        ilGenerator.Emit(OpCodes.Call, pair.Key.GetGetMethod());
+                        ilGenerator.Emit(OpCodes.Ldloc_0);
+                        ilGenerator.Emit(OpCodes.Call, pair.Value.GetSetMethod());
+                    }
+                    else
+                    {
+                        ilGenerator.Emit(OpCodes.Ldarg_0);
+                        ilGenerator.Emit(OpCodes.Ldfld, typeof (PropertyHandlerBase).GetField("map"));
 
-
+                     }
+                    }
+                }
+        
 
             /*********************************** END ***************************/
 
