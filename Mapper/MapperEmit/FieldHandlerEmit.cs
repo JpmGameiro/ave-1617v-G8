@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
 using MapperReflect;
 
 namespace MapperEmit
@@ -56,7 +57,68 @@ namespace MapperEmit
 
         public override object Copy(object objSrc)
         {
-            throw new NotImplementedException();
+            IMapperEmit m = null;
+            if (emitter != null)
+            {
+                emitter.Copy(objSrc);
+            }
+            TypeBuilder tBuilder = GetTypeBuilder("Field");
+            MethodBuilder mBuilder = GetMethodBuilder(tBuilder);
+            FieldBuilder fb = tBuilder.DefineField(
+                                "target",
+                                typeof(IMapperEmit),
+                                FieldAttributes.Private);
+            ConstructorBuilder cb = tBuilder.DefineConstructor(
+                MethodAttributes.Public,
+                CallingConventions.ExplicitThis,
+                new Type[] { typeof(IMapperEmit) });
+
+            ILGenerator cbIlGen = cb.GetILGenerator();
+            cbIlGen.Emit(OpCodes.Ldarg_0);
+            cbIlGen.Emit(OpCodes.Ldarg_1);
+            cbIlGen.Emit(OpCodes.Stfld, fb);
+            cbIlGen.Emit(OpCodes.Ret);
+
+            ILGenerator ilGenerator = mBuilder.GetILGenerator();
+
+
+            /*********************************** IL CODE ***************************/
+
+            ilGenerator.Emit(OpCodes.Newobj, dest);
+            ilGenerator.Emit(OpCodes.Stloc_0);
+            foreach (KeyValuePair<FieldInfo, FieldInfo> pair in fieldList)
+            {
+                if (pair.Key.FieldType.IsAssignableFrom(pair.Value.FieldType))
+                {
+                    ilGenerator.Emit(OpCodes.Ldloc_0);
+                    ilGenerator.Emit(OpCodes.Ldarg_1);
+                    ilGenerator.Emit(OpCodes.Ldfld, ((FieldInfo)pair.Key));
+                    ilGenerator.Emit(OpCodes.Stfld, ((FieldInfo)pair.Value));
+                }
+                else
+                {
+                    
+                    if (map.TryGetValue(pair,out m))
+                    {
+                        ilGenerator.Emit(OpCodes.Ldloc_0);
+                        ilGenerator.Emit(OpCodes.Ldarg_1);
+                        ilGenerator.Emit(OpCodes.Ldfld, pair.Key);
+                        ilGenerator.Emit(OpCodes.Ldfld, fb);
+                        ilGenerator.Emit(OpCodes.Callvirt, typeof(IMapperEmit).GetMethod("Map"));
+                        ilGenerator.Emit(OpCodes.Stfld, pair.Value);
+
+                    }
+                }
+                ilGenerator.Emit(OpCodes.Ldloc_0);
+                ilGenerator.Emit(OpCodes.Ret);
+            }
+
+            /*********************************** END ***************************/
+
+            Type t = tBuilder.CreateType();
+            emitter = (IEmitter)Activator.CreateInstance(t,m);
+            return emitter.Copy(objSrc);
+
         }
     }
 }

@@ -58,12 +58,28 @@ namespace MapperEmit
 
         public override object Copy(object objSrc)
         {
+            IMapperEmit m = null;
             if (emitter != null)
             {
                 return emitter.Copy(objSrc);
             }
             TypeBuilder tBuilder = GetTypeBuilder("Property");
             MethodBuilder mBuilder = GetMethodBuilder(tBuilder);
+
+            FieldBuilder fb = tBuilder.DefineField(
+                                "target",
+                                typeof(IMapperEmit),
+                                FieldAttributes.Private);
+            ConstructorBuilder cb = tBuilder.DefineConstructor(
+                MethodAttributes.Public,
+                CallingConventions.ExplicitThis,
+                new Type[] { typeof(IMapperEmit) });
+
+            ILGenerator cbIlGen = cb.GetILGenerator();
+            cbIlGen.Emit(OpCodes.Ldarg_0);
+            cbIlGen.Emit(OpCodes.Ldarg_1);
+            cbIlGen.Emit(OpCodes.Stfld, fb);
+            cbIlGen.Emit(OpCodes.Ret);
 
             ILGenerator ilGenerator = mBuilder.GetILGenerator();
             /*********************************** IL CODE ***************************/
@@ -79,43 +95,24 @@ namespace MapperEmit
                     ilGenerator.Emit(OpCodes.Callvirt, pair.Value.GetSetMethod());
                 }
                 else
-                {
-                    IMapperEmit m;
+                {                   
                     if (map.TryGetValue(pair, out m))
                     {
+                        ilGenerator.Emit(OpCodes.Ldloc_0);
                         ilGenerator.Emit(OpCodes.Ldarg_1);
                         ilGenerator.Emit(OpCodes.Callvirt, pair.Key.GetGetMethod());
-                        ilGenerator.Emit();
-
-                    }
+                        ilGenerator.Emit(OpCodes.Ldfld, fb);
+                        ilGenerator.Emit(OpCodes.Callvirt, typeof(IMapperEmit).GetMethod("Map"));
+                        ilGenerator.Emit(OpCodes.Callvirt, pair.Value.GetSetMethod());
+                   }
                 }
+                ilGenerator.Emit(OpCodes.Ldloc_0);
+                ilGenerator.Emit(OpCodes.Ret);
             }
 
-
-
-             return null;
+            Type t = tBuilder.CreateType();
+            emitter = (IEmitter)Activator.CreateInstance(t,m);
+            return emitter.Copy(objSrc);
         }
     }
-
-        //            object objDest = Activator.CreateInstance(dest);
-        //         
-        //                foreach (KeyValuePair<PropertyInfo, PropertyInfo> pair in propertyList)
-        //                {
-        //                    PropertyInfo propertyValue = pair.Value;
-        //                    PropertyInfo propertyKey = pair.Key;
-        //                    if (propertyKey.PropertyType.IsAssignableFrom(propertyValue.PropertyType))
-        //                    {
-        //                        propertyValue.SetValue(objDest, propertyKey.GetValue(objSrc));
-        //                    }
-        //                    else
-        //                    {
-        //                        IMapper m;
-        //                        if (map.TryGetValue(pair, out m))
-        //                        {
-        //                            propertyValue.SetValue(objDest, m.Map(propertyKey.GetValue(objSrc)));
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //            return objDest;
-    }
+}

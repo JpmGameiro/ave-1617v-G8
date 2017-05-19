@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitMapperReflectTest", "Un
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapperEmit", "MapperEmit\MapperEmit.csproj", "{DD92B308-9E39-4F6C-B93C-21E226503419}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitMapperEmitTest", "UnitMapperEmitTest\UnitMapperEmitTest.csproj", "{0D1231EC-A46B-4602-B0C1-732752DAC893}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{DD92B308-9E39-4F6C-B93C-21E226503419}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD92B308-9E39-4F6C-B93C-21E226503419}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD92B308-9E39-4F6C-B93C-21E226503419}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D1231EC-A46B-4602-B0C1-732752DAC893}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D1231EC-A46B-4602-B0C1-732752DAC893}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D1231EC-A46B-4602-B0C1-732752DAC893}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D1231EC-A46B-4602-B0C1-732752DAC893}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
