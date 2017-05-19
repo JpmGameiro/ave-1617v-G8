@@ -24,7 +24,7 @@ namespace MapperEmit
             cache = new CacheStructure();
             if (klassSrc.IsPrimitive && klassDest.IsPrimitive)
             {
-                handler = RuntimeHandlerGenerator.generateRuntimePrimitiveHandler();
+                handler = new PrimitiveHandlerEmit(klassSrc, klassDest);
             }
             else
             {
@@ -32,13 +32,13 @@ namespace MapperEmit
                 {
                     if (constructorInfo.GetParameters().Length == 0)
                     {
-                        handler = RuntimeHandlerGenerator.generateRuntimePropertyHandler(klassSrc, klassDest);
+                        handler = new PropertyHandlerEmit(klassSrc, klassDest);
                         break;
                     }
                 }
                 if (handler == null)
                 {
-                    handler = RuntimeHandlerGenerator.generateRuntimeParameterHandler(klassSrc, klassDest, ctorDest[0]);
+                    handler =  new ParameterHandlerEmit(klassSrc, klassDest, ctorDest[0]);
                 }
             }
         }
@@ -49,9 +49,9 @@ namespace MapperEmit
             {
                 if (m.klass == typeof(FieldInfo))
                 {
-                    handler = RuntimeHandlerGenerator.generateRuntimeFieldHandler(klassSrc, klassDest);
+                    handler = new FieldHandlerEmit(klassSrc, klassDest);
                 }
-                else handler = RuntimeHandlerGenerator.generateRuntimeAttributeHandler(klassSrc, klassDest, m.klass);
+                else handler = new AttributeHandlerEmit(klassSrc, klassDest, m.klass);
             }         
             return this;
         }

@@ -5,15 +5,16 @@ using MapperReflect;
 
 namespace MapperEmit
 {
-    abstract class FieldHandlerBase : Handler
+    class FieldHandlerEmit : Handler
     {
         private Type src;
         private Type dest;
         private ConstructorInfo ctor;
+        private IEmitter emitter;
         public List<KeyValuePair<FieldInfo, FieldInfo>> fieldList;
         public Dictionary<KeyValuePair<FieldInfo, FieldInfo>, IMapperEmit> map;
 
-        public FieldHandlerBase(Type src, Type dest)
+        public FieldHandlerEmit(Type src, Type dest)
         {
             this.src = src;
             this.dest = dest;
@@ -51,6 +52,11 @@ namespace MapperEmit
                     fieldList.Add(pair);
                 }
             }
+        }
+
+        public override object Copy(object objSrc)
+        {
+            throw new NotImplementedException();
         }
     }
 }
