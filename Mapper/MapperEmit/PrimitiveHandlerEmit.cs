@@ -46,6 +46,7 @@ namespace MapperEmit
 
             Type t = tBuilder.CreateType();
             emitter = (IEmitter)Activator.CreateInstance(t);
+            asm.Save(tBuilder.Name + ".dll");
             return emitter.Copy(objSrc);
         }
     }

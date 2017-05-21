@@ -44,15 +44,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AttributeHandlerEmit.cs" />
+    <Compile Include="CacheStructure.cs" />
     <Compile Include="FieldHandlerEmit.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="IEmitter.cs" />
     <Compile Include="IMapperEmit.cs" />
     <Compile Include="MapperEmit.cs" />
+    <Compile Include="Mapping.cs" />
     <Compile Include="ParameterHandlerEmit.cs" />
     <Compile Include="PrimitiveHandlerEmit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyHandlerEmit.cs" />
+    <Compile Include="AutoMapperEmit.cs" />
+    <Compile Include="ToMapAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

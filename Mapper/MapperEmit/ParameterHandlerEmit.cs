@@ -56,33 +56,47 @@ namespace MapperEmit
 
             /*********************************** IL CODE ***************************/
 
+            LocalBuilder arr = ilGenerator.DeclareLocal(typeof(object));
+            LocalBuilder i = ilGenerator.DeclareLocal(typeof(int));
+            LocalBuilder Iobjs = ilGenerator.DeclareLocal(typeof(int));
             ilGenerator.Emit(OpCodes.Ldc_I4, parameterInfos.Length);
             ilGenerator.Emit(OpCodes.Newarr, typeof(object));
-            ilGenerator.Emit(OpCodes.Stloc_0);                              //new object [] 
-            ilGenerator.Emit(OpCodes.Stloc_1, 0);                          //i = 0
+            ilGenerator.Emit(OpCodes.Stloc, arr);                          //new object [] 
+            ilGenerator.Emit(OpCodes.Ldc_I4, 0);
+            ilGenerator.Emit(OpCodes.Stloc, i);                          //i = 0
             foreach (KeyValuePair<MemberInfo, ParameterInfo> pair in parameterList)
             {
-                ilGenerator.Emit(OpCodes.Ldloc_0);
-                ilGenerator.Emit(OpCodes.Ldloc_1);
-
+ 
                 if (pair.Key is FieldInfo)
                 {
+                    ilGenerator.Emit(OpCodes.Ldloc, arr);
+                    ilGenerator.Emit(OpCodes.Ldloc, i);
                     ilGenerator.Emit(OpCodes.Ldarg_1);
                     ilGenerator.Emit(OpCodes.Ldfld, (FieldInfo)pair.Key);
-                    ilGenerator.Emit(OpCodes.Stfld);
+                    ilGenerator.Emit(OpCodes.Stelem_Ref);
                 }
                 else if (pair.Key is PropertyInfo)
                 {
+                    ilGenerator.Emit(OpCodes.Ldloc, arr);
+                    ilGenerator.Emit(OpCodes.Ldloc, i);
                     ilGenerator.Emit(OpCodes.Ldarg_1);
                     ilGenerator.Emit(OpCodes.Callvirt, src.GetProperty(pair.Key.Name).GetGetMethod());
+                    ilGenerator.Emit(OpCodes.Stelem_Ref);
                 }
 
-                ilGenerator.Emit(OpCodes.Ldloc_1);
+                ilGenerator.Emit(OpCodes.Ldloc, i);
                 ilGenerator.Emit(OpCodes.Ldc_I4, 1);
                 ilGenerator.Emit(OpCodes.Add);
-                ilGenerator.Emit(OpCodes.Stloc_1);
+                ilGenerator.Emit(OpCodes.Stloc, i);
             }
-            ilGenerator.Emit(OpCodes.Ldloc_0);
+            ilGenerator.Emit(OpCodes.Ldloc, arr);
+            //ilGenerator.Emit(OpCodes.Ldloc, dest);
+//            ilGenerator.Emit(OpCodes.Callvirt, typeof(Type).GetMethod("GetConstructors", Type.EmptyTypes));
+//            ilGenerator.Emit(OpCodes.Ldc_I4, 0);
+//            ilGenerator.Emit(OpCodes.Stloc, Iobjs);
+//            ilGenerator.Emit(OpCodes.Ldloc, Iobjs);
+//            ilGenerator.Emit(OpCodes.Ldelem_Ref);
+//            ilGenerator.Emit(OpCodes.Callvirt, typeof(ConstructorInfo).GetMethod("Invoke", new []{typeof(object[])}));
             ilGenerator.Emit(OpCodes.Newobj, ctor);
             ilGenerator.Emit(OpCodes.Ret);
 
@@ -90,6 +104,7 @@ namespace MapperEmit
 
             Type t = tBuilder.CreateType();
             emitter = (IEmitter)Activator.CreateInstance(t);
+            asm.Save(tBuilder.Name + ".dll");
             return emitter.Copy(objSrc);
         }
     }

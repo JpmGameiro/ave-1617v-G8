@@ -50,8 +50,20 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="Course.cs" />
+    <Compile Include="Organization.cs" />
+    <Compile Include="Person.cs" />
+    <Compile Include="School.cs" />
+    <Compile Include="Student.cs" />
+    <Compile Include="Subject.cs" />
+    <Compile Include="UnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MapperEmit\MapperEmit.csproj">
+      <Project>{DD92B308-9E39-4F6C-B93C-21E226503419}</Project>
+      <Name>MapperEmit</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

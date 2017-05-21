@@ -10,6 +10,8 @@ namespace MapperEmit
 {
     public abstract class Handler
     {
+        public static AssemblyBuilder asm;
+
         public abstract void LinkMembers(string nameSrc, string nameDest);
         public abstract Type GetKlass();
         public abstract object Copy(object objSrc);
@@ -17,7 +19,7 @@ namespace MapperEmit
         public static TypeBuilder GetTypeBuilder(string asmName)
         {
             string name = asmName + "CopyEmitter";
-            AssemblyBuilder asm = CreateAsm(name);
+            asm = CreateAsm(name);
             ModuleBuilder mb = asm.DefineDynamicModule(name, name + ".dll");
             TypeBuilder typeBuilder = mb.DefineType(name, TypeAttributes.Public);
             typeBuilder.AddInterfaceImplementation(typeof(IEmitter));
@@ -34,7 +36,7 @@ namespace MapperEmit
         public static MethodBuilder GetMethodBuilder(TypeBuilder tb)
         {
             return tb.DefineMethod("Copy",
-                MethodAttributes.Public | MethodAttributes.ReuseSlot, typeof(object), new[] { typeof(object) });
+                MethodAttributes.Public | MethodAttributes.Virtual |MethodAttributes.ReuseSlot, typeof(object), new[] { typeof(object) });
         }
     }
 }

@@ -57,34 +57,28 @@ namespace MapperEmit
 
             /*********************************** IL CODE ***************************/
 
-            ilGenerator.Emit(OpCodes.Newobj, dest);
-            ilGenerator.Emit(OpCodes.Stloc_0);
+            ilGenerator.Emit(OpCodes.Newobj, dest.GetConstructors()[0]);
             foreach (KeyValuePair<MemberInfo, MemberInfo> pair in attributeList)
             {
                 if (pair.Key is PropertyInfo)
                 {
-                    //ilGenerator.Emit(OpCodes.Ldtoken, src);
-                    //ilGenerator.Emit(OpCodes.Call, typeof(Type).GetMethod("GetTypeFromHandle"));
-                    //ilGenerator.Emit(OpCodes.Ldstr, pair.Key.Name);
-                    //ilGenerator.Emit(OpCodes.Callvirt, typeof(Type).GetMethod("GetProperty"));
-                    //ilGenerator.Emit(OpCodes.Callvirt, typeof(PropertyInfo).GetMethod("GetValue"));
-                    ilGenerator.Emit(OpCodes.Ldloc_0);
+                    ilGenerator.Emit(OpCodes.Dup);
                     ilGenerator.Emit(OpCodes.Ldarg_1);
                     ilGenerator.Emit(OpCodes.Callvirt, ((PropertyInfo) pair.Key).GetGetMethod());
                     ilGenerator.Emit(OpCodes.Callvirt, ((PropertyInfo) pair.Value).GetSetMethod());
                 }
                 else if (pair.Key is FieldInfo)
                 {
-                    ilGenerator.Emit(OpCodes.Ldloc_0);
+                    ilGenerator.Emit(OpCodes.Dup);
                     ilGenerator.Emit(OpCodes.Ldarg_1);
                     ilGenerator.Emit(OpCodes.Ldfld, ((FieldInfo) pair.Key));
                     ilGenerator.Emit(OpCodes.Stfld, ((FieldInfo) pair.Value));
                 }
-                ilGenerator.Emit(OpCodes.Ldloc_0);
                 ilGenerator.Emit(OpCodes.Ret);
             }
             Type t = tBuilder.CreateType();
             emitter = (IEmitter)Activator.CreateInstance(t);
+            asm.Save(tBuilder.Name + ".dll");
             return emitter.Copy(objSrc);
         }
 

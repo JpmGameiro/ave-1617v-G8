@@ -84,13 +84,12 @@ namespace MapperEmit
 
             /*********************************** IL CODE ***************************/
 
-            ilGenerator.Emit(OpCodes.Newobj, dest);
-            ilGenerator.Emit(OpCodes.Stloc_0);
+            ilGenerator.Emit(OpCodes.Newobj, dest.GetConstructors()[0]);
             foreach (KeyValuePair<FieldInfo, FieldInfo> pair in fieldList)
             {
                 if (pair.Key.FieldType.IsAssignableFrom(pair.Value.FieldType))
                 {
-                    ilGenerator.Emit(OpCodes.Ldloc_0);
+                    ilGenerator.Emit(OpCodes.Dup);
                     ilGenerator.Emit(OpCodes.Ldarg_1);
                     ilGenerator.Emit(OpCodes.Ldfld, ((FieldInfo)pair.Key));
                     ilGenerator.Emit(OpCodes.Stfld, ((FieldInfo)pair.Value));
@@ -100,7 +99,7 @@ namespace MapperEmit
                     
                     if (map.TryGetValue(pair,out m))
                     {
-                        ilGenerator.Emit(OpCodes.Ldloc_0);
+                        ilGenerator.Emit(OpCodes.Dup);
                         ilGenerator.Emit(OpCodes.Ldarg_1);
                         ilGenerator.Emit(OpCodes.Ldfld, pair.Key);
                         ilGenerator.Emit(OpCodes.Ldfld, fb);
@@ -108,15 +107,15 @@ namespace MapperEmit
                         ilGenerator.Emit(OpCodes.Stfld, pair.Value);
 
                     }
-                }
-                ilGenerator.Emit(OpCodes.Ldloc_0);
-                ilGenerator.Emit(OpCodes.Ret);
+                }             
             }
 
+            ilGenerator.Emit(OpCodes.Ret);
             /*********************************** END ***************************/
 
             Type t = tBuilder.CreateType();
             emitter = (IEmitter)Activator.CreateInstance(t,m);
+            asm.Save(tBuilder.Name + ".dll");
             return emitter.Copy(objSrc);
 
         }

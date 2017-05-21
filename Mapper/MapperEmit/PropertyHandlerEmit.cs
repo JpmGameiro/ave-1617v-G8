@@ -83,13 +83,13 @@ namespace MapperEmit
 
             ILGenerator ilGenerator = mBuilder.GetILGenerator();
             /*********************************** IL CODE ***************************/
-            ilGenerator.Emit(OpCodes.Newobj, dest);
-            ilGenerator.Emit(OpCodes.Stloc_0);
+            ilGenerator.Emit(OpCodes.Newobj, dest.GetConstructors()[0]);
+
             foreach (KeyValuePair<PropertyInfo, PropertyInfo> pair in propertyList)
             {
                 if (pair.Key.PropertyType.IsAssignableFrom(pair.Value.PropertyType))
                 {
-                    ilGenerator.Emit(OpCodes.Ldloc_0);
+                    ilGenerator.Emit(OpCodes.Dup);
                     ilGenerator.Emit(OpCodes.Ldarg_1);
                     ilGenerator.Emit(OpCodes.Callvirt, pair.Key.GetGetMethod());
                     ilGenerator.Emit(OpCodes.Callvirt, pair.Value.GetSetMethod());
@@ -98,20 +98,22 @@ namespace MapperEmit
                 {                   
                     if (map.TryGetValue(pair, out m))
                     {
-                        ilGenerator.Emit(OpCodes.Ldloc_0);
+                        ilGenerator.Emit(OpCodes.Dup);
                         ilGenerator.Emit(OpCodes.Ldarg_1);
                         ilGenerator.Emit(OpCodes.Callvirt, pair.Key.GetGetMethod());
+                        ilGenerator.Emit(OpCodes.Ldarg_0);
                         ilGenerator.Emit(OpCodes.Ldfld, fb);
-                        ilGenerator.Emit(OpCodes.Callvirt, typeof(IMapperEmit).GetMethod("Map"));
+                        ilGenerator.Emit(OpCodes.Callvirt, typeof(IMapperEmit).GetMethod("Map", new []{typeof(object)}));
                         ilGenerator.Emit(OpCodes.Callvirt, pair.Value.GetSetMethod());
                    }
                 }
-                ilGenerator.Emit(OpCodes.Ldloc_0);
-                ilGenerator.Emit(OpCodes.Ret);
             }
+            ilGenerator.Emit(OpCodes.Ret);
 
             Type t = tBuilder.CreateType();
+
             emitter = (IEmitter)Activator.CreateInstance(t,m);
+            asm.Save(tBuilder.Name + ".dll");
             return emitter.Copy(objSrc);
         }
     }
