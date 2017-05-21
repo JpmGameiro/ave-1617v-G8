@@ -4,7 +4,7 @@ using MapperReflect;
 
 namespace MapperEmit
 {
-    class PrimitiveHandlerEmit : Handler
+    class PrimitiveHandlerEmit : HandlerEmit
     {
         private Type klassDest;
         private Type klassSrc;

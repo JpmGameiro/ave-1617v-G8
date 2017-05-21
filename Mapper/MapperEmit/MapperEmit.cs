@@ -8,7 +8,7 @@ namespace MapperEmit
         public static void Main () { }
         private Type klassSrc;
         private Type klassDest;
-        private Handler handler;
+        private HandlerEmit handler;
         private ConstructorInfo [] ctorDest;
         private ParameterInfo[] parameterInfos;
         CacheStructure cache;

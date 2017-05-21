@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MapperEmit
 {
-    public abstract class Handler
+    public abstract class HandlerEmit
     {
         public static AssemblyBuilder asm;
 

@@ -46,7 +46,7 @@
     <Compile Include="AttributeHandlerEmit.cs" />
     <Compile Include="CacheStructure.cs" />
     <Compile Include="FieldHandlerEmit.cs" />
-    <Compile Include="Handler.cs" />
+    <Compile Include="HandlerEmit.cs" />
     <Compile Include="IEmitter.cs" />
     <Compile Include="IMapperEmit.cs" />
     <Compile Include="MapperEmit.cs" />

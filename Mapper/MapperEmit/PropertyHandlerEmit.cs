@@ -6,7 +6,7 @@ using MapperReflect;
 
 namespace MapperEmit
 {
-    class PropertyHandlerEmit : Handler
+    class PropertyHandlerEmit : HandlerEmit
     {
         private Type src;
         private Type dest;
@@ -75,14 +75,22 @@ namespace MapperEmit
                 CallingConventions.ExplicitThis,
                 new Type[] { typeof(IMapperEmit) });
 
+            /*********************************** IL CODE ***************************/
+
             ILGenerator cbIlGen = cb.GetILGenerator();
+            cbIlGen.Emit(OpCodes.Ldarg_0);
+            cbIlGen.Emit(OpCodes.Call, typeof(object).GetConstructor(Type.EmptyTypes));
             cbIlGen.Emit(OpCodes.Ldarg_0);
             cbIlGen.Emit(OpCodes.Ldarg_1);
             cbIlGen.Emit(OpCodes.Stfld, fb);
             cbIlGen.Emit(OpCodes.Ret);
 
             ILGenerator ilGenerator = mBuilder.GetILGenerator();
-            /*********************************** IL CODE ***************************/
+
+            LocalBuilder localSrc = ilGenerator.DeclareLocal(src);
+            ilGenerator.Emit(OpCodes.Ldarg_1);
+            ilGenerator.Emit(OpCodes.Castclass, src);
+            ilGenerator.Emit(OpCodes.Stloc, localSrc);
             ilGenerator.Emit(OpCodes.Newobj, dest.GetConstructors()[0]);
 
             foreach (KeyValuePair<PropertyInfo, PropertyInfo> pair in propertyList)
@@ -90,7 +98,7 @@ namespace MapperEmit
                 if (pair.Key.PropertyType.IsAssignableFrom(pair.Value.PropertyType))
                 {
                     ilGenerator.Emit(OpCodes.Dup);
-                    ilGenerator.Emit(OpCodes.Ldarg_1);
+                    ilGenerator.Emit(OpCodes.Ldloc, localSrc);
                     ilGenerator.Emit(OpCodes.Callvirt, pair.Key.GetGetMethod());
                     ilGenerator.Emit(OpCodes.Callvirt, pair.Value.GetSetMethod());
                 }
@@ -99,10 +107,10 @@ namespace MapperEmit
                     if (map.TryGetValue(pair, out m))
                     {
                         ilGenerator.Emit(OpCodes.Dup);
-                        ilGenerator.Emit(OpCodes.Ldarg_1);
-                        ilGenerator.Emit(OpCodes.Callvirt, pair.Key.GetGetMethod());
                         ilGenerator.Emit(OpCodes.Ldarg_0);
                         ilGenerator.Emit(OpCodes.Ldfld, fb);
+                        ilGenerator.Emit(OpCodes.Ldloc, localSrc);
+                        ilGenerator.Emit(OpCodes.Callvirt, pair.Key.GetGetMethod());
                         ilGenerator.Emit(OpCodes.Callvirt, typeof(IMapperEmit).GetMethod("Map", new []{typeof(object)}));
                         ilGenerator.Emit(OpCodes.Callvirt, pair.Value.GetSetMethod());
                    }
@@ -112,8 +120,9 @@ namespace MapperEmit
 
             Type t = tBuilder.CreateType();
 
-            emitter = (IEmitter)Activator.CreateInstance(t,m);
             asm.Save(tBuilder.Name + ".dll");
+
+            emitter = (IEmitter)Activator.CreateInstance(t, m);
             return emitter.Copy(objSrc);
         }
     }

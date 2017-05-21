@@ -6,7 +6,7 @@ using MapperReflect;
 
 namespace MapperEmit
 {
-    class ParameterHandlerEmit : Handler
+    class ParameterHandlerEmit : HandlerEmit
     {
         private Type src;
         private Type dest;
@@ -56,47 +56,24 @@ namespace MapperEmit
 
             /*********************************** IL CODE ***************************/
 
-            LocalBuilder arr = ilGenerator.DeclareLocal(typeof(object));
-            LocalBuilder i = ilGenerator.DeclareLocal(typeof(int));
-            LocalBuilder Iobjs = ilGenerator.DeclareLocal(typeof(int));
-            ilGenerator.Emit(OpCodes.Ldc_I4, parameterInfos.Length);
-            ilGenerator.Emit(OpCodes.Newarr, typeof(object));
-            ilGenerator.Emit(OpCodes.Stloc, arr);                          //new object [] 
-            ilGenerator.Emit(OpCodes.Ldc_I4, 0);
-            ilGenerator.Emit(OpCodes.Stloc, i);                          //i = 0
+            LocalBuilder localSrc = ilGenerator.DeclareLocal(src);
+            ilGenerator.Emit(OpCodes.Ldarg_1);
+            ilGenerator.Emit(OpCodes.Castclass, src);
+            ilGenerator.Emit(OpCodes.Stloc, localSrc);
             foreach (KeyValuePair<MemberInfo, ParameterInfo> pair in parameterList)
             {
- 
                 if (pair.Key is FieldInfo)
                 {
-                    ilGenerator.Emit(OpCodes.Ldloc, arr);
-                    ilGenerator.Emit(OpCodes.Ldloc, i);
-                    ilGenerator.Emit(OpCodes.Ldarg_1);
+                    ilGenerator.Emit(OpCodes.Ldloc, localSrc);
                     ilGenerator.Emit(OpCodes.Ldfld, (FieldInfo)pair.Key);
-                    ilGenerator.Emit(OpCodes.Stelem_Ref);
                 }
                 else if (pair.Key is PropertyInfo)
                 {
-                    ilGenerator.Emit(OpCodes.Ldloc, arr);
-                    ilGenerator.Emit(OpCodes.Ldloc, i);
-                    ilGenerator.Emit(OpCodes.Ldarg_1);
+                    ilGenerator.Emit(OpCodes.Ldloc, localSrc);
                     ilGenerator.Emit(OpCodes.Callvirt, src.GetProperty(pair.Key.Name).GetGetMethod());
-                    ilGenerator.Emit(OpCodes.Stelem_Ref);
                 }
-
-                ilGenerator.Emit(OpCodes.Ldloc, i);
-                ilGenerator.Emit(OpCodes.Ldc_I4, 1);
-                ilGenerator.Emit(OpCodes.Add);
-                ilGenerator.Emit(OpCodes.Stloc, i);
             }
-            ilGenerator.Emit(OpCodes.Ldloc, arr);
-            //ilGenerator.Emit(OpCodes.Ldloc, dest);
-//            ilGenerator.Emit(OpCodes.Callvirt, typeof(Type).GetMethod("GetConstructors", Type.EmptyTypes));
-//            ilGenerator.Emit(OpCodes.Ldc_I4, 0);
-//            ilGenerator.Emit(OpCodes.Stloc, Iobjs);
-//            ilGenerator.Emit(OpCodes.Ldloc, Iobjs);
-//            ilGenerator.Emit(OpCodes.Ldelem_Ref);
-//            ilGenerator.Emit(OpCodes.Callvirt, typeof(ConstructorInfo).GetMethod("Invoke", new []{typeof(object[])}));
+
             ilGenerator.Emit(OpCodes.Newobj, ctor);
             ilGenerator.Emit(OpCodes.Ret);
 

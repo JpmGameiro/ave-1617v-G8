@@ -6,7 +6,7 @@ using MapperReflect;
 
 namespace MapperEmit
 {
-    class FieldHandlerEmit : Handler
+    class FieldHandlerEmit : HandlerEmit
     {
         private Type src;
         private Type dest;
