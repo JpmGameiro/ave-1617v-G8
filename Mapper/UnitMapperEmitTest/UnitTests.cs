@@ -1,5 +1,8 @@
-﻿using MapperEmit;
+﻿using System;
+using MapperEmit;
+using MapperReflect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SettlerEmitTest;
 
 namespace UnitMapperEmitTest
 {
@@ -19,7 +22,7 @@ namespace UnitMapperEmitTest
         public void MapCustomAttributeTest()
         {
             IMapperEmit m = AutoMapperEmit.Build(typeof(Student), typeof(Person))
-                                  .Bind(Mapping.CustomAttributes);
+                                  .Bind(MappingEmit.CustomAttributes);
             Student s = new Student { ImAField = "ImAField", Nickname = "Zezito", Nr = 27721, Name = "Ze Manel" };
             Person p = (Person)m.Map(s);
             Assert.AreEqual(s.Nickname, p.Nickname);
@@ -38,7 +41,7 @@ namespace UnitMapperEmitTest
         public void MapByBindTest()
         {
             IMapperEmit m = AutoMapperEmit.Build(typeof(Student), typeof(Person))
-                                  .Bind(Mapping.Fields);
+                                  .Bind(MappingEmit.Fields);
             Student s = new Student { ImAField = "ImAField", Nickname = "Zezito", Nr = 27721, Name = "Ze Manel" };
             Person p = (Person)m.Map(s);
             Assert.AreEqual(s.ImAField, p.ImAField);
@@ -93,6 +96,16 @@ namespace UnitMapperEmitTest
             int x = 1;
             int i = (int)m.Map(x);
             Assert.AreEqual(x, i);
+        }
+
+        [TestMethod]
+        public void TestPerformance()
+        {
+            Action reflectionAction = () => AutoMapper.Build(typeof(Student), typeof(Person));
+            Action emitAction = () => AutoMapperEmit.Build(typeof(Student), typeof(Person));
+            long reflection = Benchmark.Bench(reflectionAction, "Reflection - Person");
+            long emit = Benchmark.Bench(emitAction, "Emit - Person");
+            Assert.IsTrue(reflection < emit);
         }
     }
 }

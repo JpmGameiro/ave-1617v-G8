@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using MapperReflect;
 
 namespace MapperEmit
 {
@@ -42,7 +43,7 @@ namespace MapperEmit
             }
         }
 
-        public MapperEmit Bind (Mapping m)
+        public MapperEmit Bind (MappingEmit m)
         {
             if (m.klass != handler.GetKlass())
             {

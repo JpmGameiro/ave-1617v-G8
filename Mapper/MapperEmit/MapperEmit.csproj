@@ -50,7 +50,7 @@
     <Compile Include="IEmitter.cs" />
     <Compile Include="IMapperEmit.cs" />
     <Compile Include="MapperEmit.cs" />
-    <Compile Include="Mapping.cs" />
+    <Compile Include="MappingEmit.cs" />
     <Compile Include="ParameterHandlerEmit.cs" />
     <Compile Include="PrimitiveHandlerEmit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

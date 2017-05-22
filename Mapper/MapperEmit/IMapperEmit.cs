@@ -6,7 +6,7 @@ namespace MapperEmit
     {
         object Map(object src);
         object[] Map(object[] src);
-        MapperEmit Bind(Mapping m);
+        MapperEmit Bind(MappingEmit m);
         MapperEmit Match(string nameFrom, string nameDest);
     }
 }

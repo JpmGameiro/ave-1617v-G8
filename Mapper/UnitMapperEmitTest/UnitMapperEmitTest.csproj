@@ -50,6 +50,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Benchmark.cs" />
     <Compile Include="Course.cs" />
     <Compile Include="Organization.cs" />
     <Compile Include="Person.cs" />
@@ -63,6 +64,10 @@
     <ProjectReference Include="..\MapperEmit\MapperEmit.csproj">
       <Project>{DD92B308-9E39-4F6C-B93C-21E226503419}</Project>
       <Name>MapperEmit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MapperReflect\MapperReflect.csproj">
+      <Project>{3883483d-ac71-4df8-91bc-44ff3a32656a}</Project>
+      <Name>MapperReflect</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

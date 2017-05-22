@@ -12,6 +12,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitMapperEmitTest", "UnitMapperEmitTest\UnitMapperEmitTest.csproj", "{0D1231EC-A46B-4602-B0C1-732752DAC893}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DD92B308-9E39-4F6C-B93C-21E226503419} = {DD92B308-9E39-4F6C-B93C-21E226503419}
+		{3883483D-AC71-4DF8-91BC-44FF3A32656A} = {3883483D-AC71-4DF8-91BC-44FF3A32656A}
 	EndProjectSection
 EndProject
 Global
