@@ -13,7 +13,7 @@ namespace MapperEmit
         private ConstructorInfo [] ctorDest;
         private ParameterInfo[] parameterInfos;
         CacheStructure cache;
-        private bool mappingArray;
+        public bool mappingArray;
 
         public MapperEmit(Type klassSrc, Type klassDest)
         {         

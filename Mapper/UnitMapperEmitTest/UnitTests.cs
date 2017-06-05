@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MapperEmit;
 using MapperReflect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -107,5 +108,33 @@ namespace UnitMapperEmitTest
             long emit = Benchmark.Bench(emitAction, "Emit - Person");
             Assert.IsTrue(reflection < emit);
         }
+
+        [TestMethod]
+        public void Method()
+        {
+            Student[] stds = { new Student{ Nr = 27721, Name = "Ze Manel"},
+                                new Student{ Nr = 15642, Name = "Maria Papoila"}};
+            Person[] expected = { new Person{ Nr = 27721, Name = "Ze Manel"},
+                                    new Person{ Nr = 15642, Name = "Maria Papoila"}};            Mapper<Student,Person> m = (Mapper<Student,Person>)AutoMapperEmit.Build<Student, Person>();
+            List<Person> ps = m.Map<List<Person>>(stds);
+            Person[] p = ps.ToArray();
+
+            for (int i = 0; i < p.Length; ++i)
+            {
+                Assert.AreEqual(expected[i].Name, p[i].Name);
+                Assert.AreEqual(expected[i].Nr, p[i].Nr);
+            }
+        }
+
+        [TestMethod]
+        public void Method2()
+        {
+            Student[] stds = { new Student{ Nr = 27721, Name = "Ze Manel"},
+                                new Student{ Nr = 15642, Name = "Maria Papoila"}};
+            Person[] expected = { new Person{ Nr = 27721, Name = "Ze Manel"},
+                                    new Person{ Nr = 15642, Name = "Maria Papoila"}};            Mapper<Student, Person> m = (Mapper<Student, Person>)AutoMapperEmit.Build<Student, Person>();
+            Person [] ps = m.Map(stds);            Assert.AreEqual(expected, ps);
+        }
+
     }
 }

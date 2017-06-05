@@ -12,6 +12,7 @@
         public string Nickname;                     //to test Field
         public Organization Org { get; set; }       
         public int Id { get; set; }
+        public int Nr { get; set; }
         public string Name { get; set; }
         public Subject [] Subjects { get; set; }
     }

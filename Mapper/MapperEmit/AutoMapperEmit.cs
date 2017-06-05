@@ -8,6 +8,11 @@ namespace MapperEmit
         {
             return new MapperEmit(klassSrc, klassDest);
         }
+
+        public static IMapper<TSrc, TDest> Build <TSrc, TDest> ()  
+        {
+            return new Mapper<TSrc, TDest>(typeof(TSrc),typeof(TDest));
+        }
     }
 }
 
