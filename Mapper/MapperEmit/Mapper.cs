@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +15,6 @@ namespace MapperEmit
         {
             
         }
-
 
         public TDest Map (TSrc src)
         {
@@ -48,6 +48,12 @@ namespace MapperEmit
             {
                 yield return Map(tSrc);
             }
+        }
+
+        public Mapper<TSrc, TDest> For(string birthdate, Func<object> func)
+        {
+            map.Add(new KeyValuePair<string, Func<object>>(birthdate, func));
+            return this;
         }
     }
 }

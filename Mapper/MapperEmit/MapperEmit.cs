@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using MapperReflect;
 
@@ -14,11 +15,13 @@ namespace MapperEmit
         private ParameterInfo[] parameterInfos;
         CacheStructure cache;
         public bool mappingArray;
+        public List<KeyValuePair<string, Func<object>>> map;
 
         public MapperEmit(Type klassSrc, Type klassDest)
         {         
             this.klassSrc = klassSrc;
             this.klassDest = klassDest;
+            map = new List<KeyValuePair<string, Func<object>>>();
             mappingArray = false;
             ctorDest = klassDest.GetConstructors();
             cache = new CacheStructure();
@@ -64,6 +67,17 @@ namespace MapperEmit
 
         public object Map(object objSrc)
         {
+            if (map.Count != 0)
+            {
+                foreach (KeyValuePair<string, Func<object>> pair in map)
+                {
+                    PropertyInfo pInfo = objSrc.GetType().GetProperty(pair.Key);
+                    if (pInfo != null)
+                    {
+                        pInfo.SetValue(objSrc, pair.Value.Invoke());
+                    }
+                }
+            }
             object o = cache.GetValue(klassDest);
             if (o == null)
             {

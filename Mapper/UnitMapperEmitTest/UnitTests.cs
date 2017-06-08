@@ -136,5 +136,15 @@ namespace UnitMapperEmitTest
             Person [] ps = m.Map(stds);            Assert.AreEqual(expected, ps);
         }
 
+        [TestMethod]
+        public void Method3()
+        {
+            Random rand = new Random();
+            Student s = new Student { Nr = 27721, Name = "Ze Manel" };
+            DateTime dt = new DateTime(1970, 1, 1);
+            Mapper<Student, Person> m = AutoMapperEmit.Build<Student, Person>().For("BirthDate", () => dt.AddMonths(rand.Next(600)));
+            Person p = (Person)m.Map(s);
+            Assert.AreEqual(s.BirthDate, p.BirthDate);
+        }
     }
 }

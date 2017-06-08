@@ -1,4 +1,6 @@
-﻿namespace MapperEmit
+﻿using System;
+
+namespace MapperEmit
 {
     public class Person
     {
@@ -15,5 +17,6 @@
         public int Nr { get; set; }
         public string Name { get; set; }
         public Subject [] Subjects { get; set; }
+        public DateTime BirthDate { get; set; }
     }
 }
