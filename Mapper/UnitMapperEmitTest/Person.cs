@@ -17,6 +17,5 @@ namespace MapperEmit
         public int Nr { get; set; }
         public string Name { get; set; }
         public Subject [] Subjects { get; set; }
-        public DateTime BirthDate { get; set; }
     }
 }

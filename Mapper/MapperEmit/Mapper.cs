@@ -23,6 +23,7 @@ namespace MapperEmit
 
         public TDest[] Map (TSrc[] src)
         {
+            mappingArray = true;
             TDest[] dests = new TDest[src.Length];
             for (int i = 0; i < dests.Length; ++i)
             {
@@ -44,15 +45,22 @@ namespace MapperEmit
 
         public IEnumerable<TDest> MapLazy(IEnumerable<TSrc> src)
         {
+            mappingArray = true;
             foreach (TSrc tSrc in src)
             {
                 yield return Map(tSrc);
             }
         }
 
-        public Mapper<TSrc, TDest> For(string birthdate, Func<object> func)
+        public Mapper<TSrc, TDest> For<R>(string s, Func<R> func) where R : class
         {
-            map.Add(new KeyValuePair<string, Func<object>>(birthdate, func));
+            PropertyInfo p = typeof(TDest).GetProperty(s);
+            if (p != null)
+            {
+                if (p.PropertyType == typeof(R))
+                    map.Add(new KeyValuePair<string, Func<object>>(s, func));
+                else throw new MismatchTypeException("Types not Compatibles");
+            }
             return this;
         }
     }

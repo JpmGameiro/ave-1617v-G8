@@ -85,7 +85,7 @@ namespace MapperEmit
                 cache.Add(klassDest, toRet);
                 return toRet;
             }
-            else if (o != null && mappingArray)
+            if (mappingArray)
             {
                 object toRet = handler.Copy(objSrc);
                 return toRet;

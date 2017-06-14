@@ -53,6 +53,7 @@
     <Compile Include="Mapper.cs" />
     <Compile Include="MapperEmit.cs" />
     <Compile Include="MappingEmit.cs" />
+    <Compile Include="MismatchTypeException.cs" />
     <Compile Include="ParameterHandlerEmit.cs" />
     <Compile Include="PrimitiveHandlerEmit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
