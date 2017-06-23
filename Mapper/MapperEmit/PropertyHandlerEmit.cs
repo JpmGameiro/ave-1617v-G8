@@ -14,7 +14,7 @@ namespace MapperEmit
         private IEmitter emitter;
         public List<KeyValuePair<PropertyInfo, PropertyInfo>> propertyList;
         public Dictionary<KeyValuePair<PropertyInfo, PropertyInfo>, IMapperEmit> map;
-
+        
         public PropertyHandlerEmit(Type src, Type dest)
         {
             this.src = src;

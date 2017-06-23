@@ -72,6 +72,7 @@ namespace MapperEmit
                 MethodAttributes.Public,
                 CallingConventions.ExplicitThis,
                 new Type[] { typeof(IMapperEmit) });
+                /*********************************** IL CODE ***************************/
 
             ILGenerator cbIlGen = cb.GetILGenerator();
             cbIlGen.Emit(OpCodes.Ldarg_0);
@@ -79,12 +80,10 @@ namespace MapperEmit
             cbIlGen.Emit(OpCodes.Stfld, fb);
             cbIlGen.Emit(OpCodes.Ret);
 
-            ILGenerator ilGenerator = mBuilder.GetILGenerator();
-
-
-            /*********************************** IL CODE ***************************/
-
+            ILGenerator ilGenerator = mBuilder.GetILGenerator();           
+      
             ilGenerator.Emit(OpCodes.Newobj, dest.GetConstructors()[0]);
+
             foreach (KeyValuePair<FieldInfo, FieldInfo> pair in fieldList)
             {
                 if (pair.Key.FieldType.IsAssignableFrom(pair.Value.FieldType))
@@ -95,8 +94,7 @@ namespace MapperEmit
                     ilGenerator.Emit(OpCodes.Stfld, ((FieldInfo)pair.Value));
                 }
                 else
-                {
-                    
+                {                  
                     if (map.TryGetValue(pair,out m))
                     {
                         ilGenerator.Emit(OpCodes.Dup);

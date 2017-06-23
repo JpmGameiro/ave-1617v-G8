@@ -30,12 +30,12 @@ namespace UnitMapperEmitTest
         }
 
         [TestMethod]
-        public void MapParametersTest()             //comentar construtor sem parametros de Person
+        public void MapParametersTest()
         {
-            IMapperEmit m = AutoMapperEmit.Build(typeof(Student), typeof(Person));
-            Student s = new Student { ImAField = "ImAField", Nickname = "Zezito", Nr = 27721, Name = "Ze Manel" };
-            Person p = (Person)m.Map(s);
-            Assert.AreEqual(s.ImAField, p.ImAField);
+            IMapperEmit m = AutoMapperEmit.Build(typeof(Student), typeof(Course));
+            Student s = new Student { ImAField = "ImAField", Nickname = "Zezito", Nr = 27721, Name = "Ze Manel", Address = "Rua de Cima"};
+            Course c = (Course)m.Map(s);
+            Assert.AreEqual(s.Address, c.Address);
         }
 
         [TestMethod]
@@ -83,11 +83,9 @@ namespace UnitMapperEmitTest
         [TestMethod]
         public void CacheTest()
         {
-            IMapperEmit m = AutoMapperEmit.Build(typeof(Student), typeof(Person));
-            Student s = new Student { Nr = 27721, Name = "Ze Manel" };
-            Person p = (Person)m.Map(s);
-            Person p1 = (Person)m.Map(s);
-            Assert.AreEqual(s.Name, p1.Name);
+            IMapperEmit mapper1 = AutoMapperEmit.Build(typeof(Student), typeof(Person));
+            IMapperEmit mapper2 = AutoMapperEmit.Build(typeof(Student), typeof(Person));
+            Assert.AreEqual(mapper1.GetHashCode(), mapper2.GetHashCode());
         }
 
         [TestMethod]
@@ -113,16 +111,15 @@ namespace UnitMapperEmitTest
         public void GenericBuildTestForCollectionMap()
         {
             Student[] stds = { new Student{ Nr = 27721, Name = "Ze Manel"},
-                                new Student{ Nr = 15642, Name = "Maria Papoila"}};
-            Person[] expected = { new Person{ Nr = 27721, Name = "Ze Manel"},
-                                    new Person{ Nr = 15642, Name = "Maria Papoila"}};            Mapper<Student,Person> m = (Mapper<Student,Person>)AutoMapperEmit.Build<Student, Person>();
+                                new Student{ Nr = 15642, Name = "Maria Papoila"}};            Mapper<Student,Person> m = (Mapper<Student,Person>)AutoMapperEmit.Build<Student, Person>()
+                .Match("Nr", "Id");
             List<Person> ps = m.Map<List<Person>>(stds);
             Person[] p = ps.ToArray();
 
             for (int i = 0; i < p.Length; ++i)
             {
-                Assert.AreEqual(expected[i].Name, p[i].Name);
-                Assert.AreEqual(expected[i].Nr, p[i].Nr);
+                Assert.AreEqual(stds[i].Name, p[i].Name);
+                Assert.AreEqual(stds[i].Nr, p[i].Id);
             }
         }
 
@@ -131,19 +128,18 @@ namespace UnitMapperEmitTest
         {
             Student[] stds = { new Student{ Nr = 27721, Name = "Ze Manel"},
                                 new Student{ Nr = 15642, Name = "Maria Papoila"}};
-            Person[] expected = { new Person{ Nr = 27721, Name = "Ze Manel"},
-                                    new Person{ Nr = 15642, Name = "Maria Papoila"}};
 
-            Mapper<Student, Person> m = (Mapper<Student, Person>)AutoMapperEmit.Build<Student, Person>();
+            Mapper<Student, Person> m = (Mapper<Student, Person>)AutoMapperEmit.Build<Student, Person>()
+                .Match("Nr", "Id");
             Person [] ps = m.Map(stds);
 
             for (int i = 0; i < ps.Length; ++i)
             {
-                Assert.AreEqual(expected[i].Name, ps[i].Name);
-                Assert.AreEqual(expected[i].Nr, ps[i].Nr);
+                Assert.AreEqual(stds[i].Name, ps[i].Name);
+                Assert.AreEqual(stds[i].Nr, ps[i].Id);
             }
         }
-
+        
 
         [TestMethod]
         public void MapLazyTest()
@@ -154,7 +150,8 @@ namespace UnitMapperEmitTest
                 s1,
                 new Student {Nr = 3121}
             };   
-            Mapper<Student, Person> m = (Mapper<Student, Person>)AutoMapperEmit.Build<Student, Person>();
+            Mapper<Student, Person> m = (Mapper<Student, Person>)AutoMapperEmit.Build<Student, Person>()
+                .Match("Nr", "Id");
             using (IEnumerator<Student> st = stds.GetEnumerator())
             {
                 using (IEnumerator<Person> prsn = m.MapLazy(stds).GetEnumerator())
@@ -162,7 +159,7 @@ namespace UnitMapperEmitTest
                     s1.Nr = 36;
                     while (st.MoveNext() && prsn.MoveNext())
                     {
-                        Assert.AreEqual(st.Current.Nr, prsn.Current.Nr);
+                        Assert.AreEqual(st.Current.Nr, prsn.Current.Id);
                     }
                 }
             }
@@ -172,7 +169,7 @@ namespace UnitMapperEmitTest
         public void ForMethodTest()
         {
             Student std = new Student ();
-            Mapper<Student, Person> m = AutoMapperEmit.Build<Student, Person>().For("Name", () => std.GenerateString());
+            Mapper<Student, Person> m = AutoMapperEmit.Build<Student, Person>().For("Name", () => "João");
             Person p = (Person)m.Map(std);
             Assert.AreEqual(std.Name, p.Name);
         }

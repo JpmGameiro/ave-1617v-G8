@@ -5,24 +5,26 @@ namespace MapperReflect
 {
     public class CacheStructure
     {
-        private Dictionary<Type, object> cacheDictionary;
+        public Dictionary<KeyValuePair<Type, Type>, IMapper> cacheDictionary;
 
         public CacheStructure()
         {
-            cacheDictionary = new Dictionary<Type, object>();
+            cacheDictionary = new Dictionary<KeyValuePair<Type, Type>, IMapper>();
         }
 
-        public void Add(Type t, object o)
+        public void Add(Type src, Type dest, IMapper mapper)
         {
-            cacheDictionary.Add(t,o);
+            KeyValuePair<Type, Type> pair = new KeyValuePair<Type, Type>(src, dest);
+            cacheDictionary.Add(pair, mapper);
         }
 
-        public object GetValue(Type t)
+        public IMapper GetMapper(Type src, Type dest)
         {
-            object o;
-            if (cacheDictionary.TryGetValue(t, out o))
+            IMapper mapper;
+            KeyValuePair<Type, Type> pair = new KeyValuePair<Type, Type>(src, dest);
+            if (cacheDictionary.TryGetValue(pair, out mapper))
             {
-                return o;
+                return mapper;
             }
             return null;
         }

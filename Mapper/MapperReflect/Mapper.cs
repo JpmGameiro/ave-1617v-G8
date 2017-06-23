@@ -63,19 +63,7 @@ namespace MapperReflect
 
         public object Map(object objSrc)
         {
-            object o = cache.GetValue(klassDest);
-            if (o == null)
-            {
-                object toRet = handler.Copy(objSrc);
-                cache.Add(klassDest, toRet);
-                return toRet;
-            }
-            else if (o != null && mappingArray)
-            {
-                object toRet = handler.Copy(objSrc);
-                return toRet;
-            }
-            return o;
+            return handler.Copy(objSrc);
         }
 
         public object[] Map(object[] objSrc)

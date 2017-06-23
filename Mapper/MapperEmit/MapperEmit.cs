@@ -13,18 +13,14 @@ namespace MapperEmit
         private HandlerEmit handler;
         private ConstructorInfo [] ctorDest;
         private ParameterInfo[] parameterInfos;
-        CacheStructure cache;
-        public bool mappingArray;
-        public List<KeyValuePair<string, Func<object>>> map;
+        public Dictionary<string, Func<object>> mapFor;
 
         public MapperEmit(Type klassSrc, Type klassDest)
         {         
             this.klassSrc = klassSrc;
             this.klassDest = klassDest;
-            map = new List<KeyValuePair<string, Func<object>>>();
-            mappingArray = false;
+            mapFor = new Dictionary<string, Func<object>>();
             ctorDest = klassDest.GetConstructors();
-            cache = new CacheStructure();
             if (klassSrc.IsPrimitive && klassDest.IsPrimitive)
             {
                 handler = new PrimitiveHandlerEmit(klassSrc, klassDest);
@@ -67,9 +63,9 @@ namespace MapperEmit
 
         public object Map(object objSrc)
         {
-            if (map.Count != 0)
+            if (mapFor.Count != 0)
             {
-                foreach (KeyValuePair<string, Func<object>> pair in map)
+                foreach (KeyValuePair<string, Func<object>> pair in mapFor)
                 {
                     PropertyInfo pInfo = objSrc.GetType().GetProperty(pair.Key);
                     if (pInfo != null)
@@ -78,30 +74,16 @@ namespace MapperEmit
                     }
                 }
             }
-            object o = cache.GetValue(klassDest);
-            if (o == null)
-            {
-                object toRet = handler.Copy(objSrc);
-                cache.Add(klassDest, toRet);
-                return toRet;
-            }
-            if (mappingArray)
-            {
-                object toRet = handler.Copy(objSrc);
-                return toRet;
-            }
-            return o;
+            return handler.Copy(objSrc);          
         }
 
         public object[] Map(object[] objSrc)
         {
-            mappingArray = true;
             Array array = Array.CreateInstance(klassDest,objSrc.Length);
             for (int i = 0; i < array.Length; i++)
             {
                 array.SetValue(this.Map(objSrc[i]), i);
             }
-            return (object[])array;
-        }
+            return (object[])array;}
     }
 }

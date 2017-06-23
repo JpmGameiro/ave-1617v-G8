@@ -82,23 +82,6 @@ namespace MapperEmit
             return emitter.Copy(objSrc);
         }
 
-        
         /*********************************** END ***************************/
-
-
-        //        object objDest = Activator.CreateInstance(dest);
-        //            if (attributeList != null)
-        //            {
-        //                foreach (KeyValuePair<MemberInfo, MemberInfo> pair in attributeList)
-        //                {
-        //                    if (pair.Key is PropertyInfo)
-        //                    {
-        //                        ((PropertyInfo) pair.Value).SetValue(objDest, ((PropertyInfo) pair.Key).GetValue(objSrc));
-        //                    }
-        //                    else if (pair.Key is FieldInfo)
-        //                        ((FieldInfo) pair.Value).SetValue(objDest, ((FieldInfo) pair.Key).GetValue(objSrc));
-        //                }
-        //            }
-        //            return objDest;
     }
 }

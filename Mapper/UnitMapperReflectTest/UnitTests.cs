@@ -26,12 +26,12 @@ namespace UnitMapperReflectTest
         }
 
         [TestMethod]
-        public void MapParametersTest()             //comentar construtor sem parametros de Person
+        public void MapParametersTest()             
         {
-            IMapper m = AutoMapper.Build(typeof(Student), typeof(Person));
-            Student s = new Student {ImAField = "ImAField", Nickname = "Zezito", Nr = 27721, Name = "Ze Manel"};
-            Person p = (Person) m.Map(s);
-            Assert.AreEqual(s.ImAField, p.ImAField);
+            IMapper m = AutoMapper.Build(typeof(Student), typeof(Course));
+            Student s = new Student {ImAField = "ImAField", Nickname = "Zezito", Nr = 27721, Name = "Ze Manel", Address = "Rua de Cima"};
+            Course c = (Course) m.Map(s);
+            Assert.AreEqual(s.Address, c.Address);
         }
 
         [TestMethod]
@@ -74,11 +74,9 @@ namespace UnitMapperReflectTest
         [TestMethod]
         public void CacheTest()
         {
-            IMapper m = AutoMapper.Build(typeof(Student), typeof(Person));
-            Student s = new Student { Nr = 27721, Name = "Ze Manel" };
-            Person p = (Person)m.Map(s);
-            Person p1 = (Person) m.Map(s);
-            Assert.AreEqual(s.Name, p1.Name);
+            IMapper mapper1 = AutoMapper.Build(typeof(Student), typeof(Person));
+            IMapper mapper2 = AutoMapper.Build(typeof(Student), typeof(Person));
+            Assert.AreEqual(mapper1.GetHashCode(), mapper2.GetHashCode());
         }
 
         [TestMethod]
